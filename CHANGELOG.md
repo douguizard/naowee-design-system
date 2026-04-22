@@ -6,6 +6,20 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/). Vers
 
 ---
 
+## [1.2.0] — 2026-04-21
+
+### Changed
+- **Landing rediseñada con estética Vercel / Linear**: tema oscuro (#08080c), gradient mesh animado con acentos naranjas, noise grid sutil con mask radial, typography tight con `letter-spacing: -.045em`, JetBrains Mono en code blocks y metadata.
+- Hero con pill clickeable (v1.2.0 release), gradient text con stop naranja en "Naowee", CTAs primary/ghost con glow shadow.
+- Feature cards con cursor-following radial gradient (`--mx`, `--my` tracking via `mousemove`).
+- Install section con code block estilo macOS window (dots de semáforo + label + botón Copy con clipboard API).
+- Stats row: 4 números grandes (17 componentes · 1 archivo · 229 KB · 0 deps) con gradient text.
+- Components grid: 17 items con dot naranja, hover transforma a tono brand.
+- Footer minimalista con separadores y monospace version badge.
+- Animaciones de entrada (`fadeUp` con stagger) en elementos del hero.
+
+---
+
 ## [1.1.0] — 2026-04-21
 
 ### Added
