@@ -6,6 +6,27 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/). Vers
 
 ---
 
+## [1.4.0] — 2026-04-22
+
+### Added
+- **Code block con syntax highlighting por componente** (estilo Vercel/Linear)
+  - Nueva función `highlightHtml(raw)` — wrappea tokens (tag / attr / string / comment / punct) con spans de clase para colorear
+  - Nueva función `formatHtml(str)` — indenta el HTML con 2 espacios por nivel basándose en apertura / cierre / self-closing de tags
+  - Nueva función `copyCode()` — copia el texto crudo formateado (no el markup coloreado), usa `data-raw` attr del `<pre>`
+- **Header del code block estilo macOS**: 3 dots de semáforo + label monospace "HTML" + botón Copy con icon SVG
+- **Estados del botón Copy**: verde cuando copiado, con label "Copied" por 1.6s, vuelve a "Copy"
+- **Scrollbar custom** en code blocks (8px, `rgba(255,255,255,.12)` con hover más claro)
+- **Altura aumentada** del code block: 220px → 340px `max-height`
+
+### Syntax highlight tokens
+- `.hl-tag` → `#ff9a4f` (nombres de elementos)
+- `.hl-attr` → `#68a9ff` (atributos)
+- `.hl-str` → `#a7d49a` (strings en comillas)
+- `.hl-punct` → `#71717a` (`<`, `>`, `/`)
+- `.hl-com` → `#4b4b58` italic (comentarios HTML)
+
+---
+
 ## [1.3.0] — 2026-04-21
 
 ### Changed

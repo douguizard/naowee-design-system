@@ -206,33 +206,59 @@ body::after{
 .pg-control input[type="range"]{width:100%;accent-color:#D74009}
 .pg-control .pg-range-val{font-size:11px;color:#9C9EBF;margin-top:2px}
 
-/* ── CODE OUTPUT (estilo macOS window como la landing) ─ */
-.pg-code-wrap{margin-top:16px}
+/* ── CODE OUTPUT (estilo Vercel/Linear) ─────────────── */
+.pg-code-wrap{margin-top:20px}
 .pg-code-bar{
   display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:0;
-  padding:10px 14px;
+  padding:10px 14px 10px 12px;
   background:#0a0a10;border:1px solid rgba(255,255,255,.08);
-  border-bottom:none;border-radius:8px 8px 0 0;
+  border-bottom:none;border-radius:10px 10px 0 0;
 }
-.pg-code-bar span{
+.pg-code-bar__left{ display:flex; align-items:center; gap:12px }
+.pg-code-dots{ display:flex; gap:6px }
+.pg-code-dots span{
+  width:10px; height:10px; border-radius:9999px;
+  background:rgba(255,255,255,.12);
+}
+.pg-code-label{
   font-family:'JetBrains Mono',monospace;
   font-size:11px;font-weight:500;color:#71717a;letter-spacing:0;
 }
 .pg-copy-btn{
+  display:inline-flex; align-items:center; gap:6px;
   border:none;background:rgba(255,255,255,.04);
   font-size:11px;font-weight:500;color:#a1a1aa;
-  cursor:pointer;font-family:inherit;padding:4px 10px;border-radius:5px;
+  cursor:pointer;font-family:inherit;padding:5px 10px;border-radius:6px;
   transition:all .15s;
 }
 .pg-copy-btn:hover{background:rgba(255,255,255,.08);color:#fafafa}
+.pg-copy-btn.copied{color:#4ade80;background:rgba(74,222,128,.08)}
+.pg-copy-btn svg{ width:12px; height:12px }
+
 .pg-code{
   background:#0c0c12;color:#d0d0d8;
   border:1px solid rgba(255,255,255,.08);border-top:none;
-  border-radius:0 0 8px 8px;padding:16px;
+  border-radius:0 0 10px 10px;padding:18px 20px;
   font-family:'JetBrains Mono','SF Mono','Fira Code',monospace;
-  font-size:12px;line-height:1.7;
-  white-space:pre-wrap;word-break:break-all;max-height:220px;overflow-y:auto;
+  font-size:12.5px;line-height:1.7;
+  white-space:pre;overflow:auto;max-height:340px;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent;
+}
+.pg-code::-webkit-scrollbar{ width:8px; height:8px }
+.pg-code::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.12); border-radius:4px }
+.pg-code::-webkit-scrollbar-thumb:hover{ background:rgba(255,255,255,.2) }
+/* Syntax highlighting tokens */
+.pg-code .hl-tag{ color:#ff9a4f; font-weight:500 }
+.pg-code .hl-attr{ color:#68a9ff }
+.pg-code .hl-str{ color:#a7d49a }
+.pg-code .hl-op{ color:#71717a }
+.pg-code .hl-punct{ color:#71717a }
+.pg-code .hl-com{ color:#4b4b58; font-style:italic }
+.pg-code-placeholder{
+  padding:18px 20px;color:#71717a;font-size:12.5px;
+  font-family:'JetBrains Mono',monospace;
+  background:#0c0c12;border:1px solid rgba(255,255,255,.08);border-top:none;
+  border-radius:0 0 10px 10px;
 }
 
 /* ── FOUNDATION SECTIONS ──────────────────────────────── */
@@ -387,7 +413,7 @@ body::after{
     <div class="pg-sidebar-logo">
       <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/><path d="M8 14l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>Naowee DS</span>
-      <small>v1.3.0</small>
+      <small>v1.4.0</small>
     </div>
     <div class="pg-sidebar-search">
       <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -2434,7 +2460,22 @@ function renderSection(id) {
   if (comp.controls.length) {
     html += '<div class="pg-controls"><div class="pg-controls-title">Properties</div>' + renderControls(id) + '</div>';
   }
-  html += '</div><div class="pg-code-wrap"><div class="pg-code-bar"><span>HTML</span><button class="pg-copy-btn" onclick="copyCode()">Copy</button></div><pre class="pg-code" id="pg-code-output">' + escapeHtml(renderPreview(id)) + '</pre></div>';
+  var rawCode = renderPreview(id);
+  var formattedCode = formatHtml(rawCode);
+  html += '</div>'
+    + '<div class="pg-code-wrap">'
+      + '<div class="pg-code-bar">'
+        + '<div class="pg-code-bar__left">'
+          + '<div class="pg-code-dots"><span></span><span></span><span></span></div>'
+          + '<span class="pg-code-label">HTML</span>'
+        + '</div>'
+        + '<button class="pg-copy-btn" type="button" onclick="copyCode()">'
+          + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+          + '<span class="pg-copy-btn__label">Copy</span>'
+        + '</button>'
+      + '</div>'
+      + '<pre class="pg-code" id="pg-code-output" data-raw="' + escapeHtml(formattedCode) + '">' + highlightHtml(rawCode) + '</pre>'
+    + '</div>';
   body.innerHTML = html;
   var preview = document.getElementById('pg-preview');
   if (preview) {
@@ -2611,15 +2652,66 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 function copyCode() {
   var code = document.getElementById('pg-code-output');
-  if (code) {
-    navigator.clipboard.writeText(code.textContent);
+  if (!code) return;
+  // Obtener texto plano (sin markup de highlight)
+  var text = code.dataset.raw || code.textContent;
+  navigator.clipboard.writeText(text).then(function(){
     var btn = document.querySelector('.pg-copy-btn');
-    btn.textContent = 'Copied!';
-    setTimeout(function(){ btn.textContent = 'Copy'; }, 1500);
-  }
+    var label = btn.querySelector('.pg-copy-btn__label');
+    btn.classList.add('copied');
+    if (label) label.textContent = 'Copied';
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      if (label) label.textContent = 'Copy';
+    }, 1600);
+  });
 }
 function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* Format HTML con indentación básica (2 espacios por nivel) */
+function formatHtml(str) {
+  // Colapsa espacios, quiebra en < y >
+  var formatted = '';
+  var indent = 0;
+  var tokens = str.replace(/>\s+</g, '><').split(/(<[^>]+>)/).filter(Boolean);
+  tokens.forEach(function(tok){
+    if (!tok.trim()) return;
+    if (/^<\/[^>]+>$/.test(tok)) {
+      indent = Math.max(0, indent - 1);
+      formatted += '  '.repeat(indent) + tok + '\n';
+    } else if (/^<[^\/][^>]*\/>$/.test(tok) || /^<(br|img|input|hr|meta|link)[\s>]/.test(tok)) {
+      formatted += '  '.repeat(indent) + tok + '\n';
+    } else if (/^<[^\/!][^>]*>$/.test(tok)) {
+      formatted += '  '.repeat(indent) + tok + '\n';
+      indent++;
+    } else if (/^<!--/.test(tok)) {
+      formatted += '  '.repeat(indent) + tok + '\n';
+    } else {
+      formatted += '  '.repeat(indent) + tok.trim() + '\n';
+    }
+  });
+  return formatted.trimEnd();
+}
+
+/* Syntax highlight HTML — wrappea tags / atributos / strings / comentarios */
+function highlightHtml(raw) {
+  var formatted = formatHtml(raw);
+  var escaped = escapeHtml(formatted);
+  // Comentarios HTML
+  escaped = escaped.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="hl-com">$1</span>');
+  // Tags: <tagname  >, </tagname>, <tagname ... attr="..." >
+  escaped = escaped.replace(/(&lt;\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:[^&]|&(?!lt;))*?)(\/?&gt;)/g, function(m, open, name, attrs, close){
+    // Dentro de attrs, matchear attr="value"
+    var highlightedAttrs = attrs.replace(/([a-zA-Z-:@][a-zA-Z0-9-:@]*)(=)(&quot;)([^&]*?)(&quot;)/g,
+      '<span class="hl-attr">$1</span><span class="hl-op">$2</span><span class="hl-str">$3$4$5</span>');
+    return '<span class="hl-punct">' + open + '</span>'
+         + '<span class="hl-tag">' + name + '</span>'
+         + highlightedAttrs
+         + '<span class="hl-punct">' + close + '</span>';
+  });
+  return escaped;
 }
 
 /* ── Interactive component helpers ── */
