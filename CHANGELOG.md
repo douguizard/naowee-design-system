@@ -6,6 +6,23 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/). Vers
 
 ---
 
+## [1.3.0] — 2026-04-21
+
+### Changed
+- **Playground rediseñado con el mismo look & feel Vercel/Linear** de la landing.
+  - Shell: body con gradient mesh + grid pattern en fondo, sidebar con `backdrop-blur`, topbar translúcido
+  - Sidebar: brand mark con color orange accent, version badge monospace, search con focus glow
+  - Nav: group headers estilo `// comment` en JetBrains Mono, items activos con border-left naranja y bg sutil
+  - Topbar: título tight `letter-spacing:-.015em`, badge monospace con border y bg translúcido
+  - Preview wrap: card blanca flotando con `box-shadow` profunda para contraste con bg dark
+  - Controls panel: bg translúcido con backdrop-blur, títulos en monospace
+  - Segmented control: estilo dark con selected state sutil
+  - Code blocks: estilo macOS window (header con label + Copy button) con syntax dark, JetBrains Mono 12px
+  - Foundation grids: semantic items, radius items, type rows, spacing bars, icon cards — todos migrados a tema dark con monospace en metadata
+  - Tags (Figma/Custom): estilos translúcidos con borders acorde al bg dark
+
+---
+
 ## [1.2.0] — 2026-04-21
 
 ### Changed
