@@ -6,6 +6,19 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/). Vers
 
 ---
 
+## [1.1.0] — 2026-04-21
+
+### Added
+- **Landing page** (`index.html`) separada del playground. Hero + features grid + snippet de instalación CDN + grid de componentes clickeable.
+- Navegación entre landing y `playground.html` con nav sticky arriba.
+- Badge de versión visible en la landing.
+
+### Changed
+- `index.html` anterior (el playground) se renombró a `playground.html`. El nuevo `index.html` es una landing pública profesional.
+- GitHub Pages ahora sirve la landing en `/` y el playground en `/playground.html`.
+
+---
+
 ## [1.0.0] — 2026-04-21
 
 ### Added
