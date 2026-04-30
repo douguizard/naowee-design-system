@@ -6,6 +6,59 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/). Vers
 
 ---
 
+## [1.8.0] — 2026-04-29
+
+### Added — Wizard Form Recipe
+Receta unificada para wizards/modals con validación, extraída del flujo "Crear nuevo evento" de `naowee-test-sidebar-shell` (que a su vez se inspiró en `naowee-test-incentivos/programa-wizard`). Permite que cualquier producto reutilice el mismo pattern visual y de UX.
+
+- **`.naowee-stepper--pulse`** — modifier que aplica un ring naranja pulsante (2s loop) al `__step--active .__number`. Llama atención al paso en curso.
+  ```html
+  <ol class="naowee-stepper naowee-stepper--pulse"> ... </ol>
+  ```
+
+- **`.naowee-stepper--distributed`** — modifier que estira steps + connectors a ancho completo (`flex: 1 1 0` por step, `flex: 1 1 auto` en connectors). El último step colapsa a su ancho natural. Útil cuando el stepper vive en un header/modal con ancho fijo y queremos distribución pareja sin huecos al final.
+  ```html
+  <ol class="naowee-stepper naowee-stepper--pulse naowee-stepper--distributed"> ... </ol>
+  ```
+
+- **`.naowee-shake`** — utility que aplica wiggle horizontal (450ms, cubic-bezier de anticipación) a cualquier elemento. Pensado para campos `--error` cuando una validación bloquea el avance del wizard. Para reiniciar la animación en re-trigger:
+  ```js
+  wrap.classList.remove('naowee-shake');
+  void wrap.offsetWidth;        // forzar reflow
+  wrap.classList.add('naowee-shake');
+  setTimeout(() => wrap.classList.remove('naowee-shake'), 500);
+  ```
+
+- **`.naowee-datepicker--compact`** — variante del calendario reducida a 266px (vs 412px default), con celdas 32×32 y tipografía 12px. Diseñada para popups anclados a inputs en grids estrechos (ej: dos fechas en columna 50/50 dentro de un modal).
+
+- **`.naowee-datepicker--popover`** + **`.naowee-datepicker--open`** — wrapper para mostrar el calendario como popup flotante con elevación (`box-shadow: 0 12px 32px rgba(40,40,52,.14)`), `position: fixed`, `z-index: 10000`. El consumer posiciona vía JS (`getBoundingClientRect` del trigger). Fade+slide visible cuando se le agrega `--open`.
+
+### Pattern: Validación lazy con shake + auto-scroll
+Recomendación documentada para integradores. El handler de "Siguiente" debe:
+1. Validar el step actual y construir un objeto `errors`
+2. Para cada campo inválido, agregar `naowee-textfield--error` o `naowee-dropdown--error` al wrapper + insertar un `<div class="naowee-helper naowee-helper--negative">` con badge SVG y texto
+3. Hacer scroll suave del modal body al primer inválido (`body.scrollTo({ top: ..., behavior: 'smooth' })`)
+4. Después de 260ms, aplicar `.naowee-shake` a todos los wrappers inválidos (re-trigger después del scroll para que la animación sea visible)
+
+Al editar/seleccionar un campo válido, limpieza quirúrgica (sin re-render):
+- Remover clase `--error` del wrapper
+- Remover el `.naowee-helper--negative` del DOM
+
+### Pattern: Range integrity con auto-clear
+Cuando dos datepickers forman rango "from/to":
+- "to" usa "from" como `minDate` — días anteriores se renderizan con `.naowee-datepicker__day--disabled`
+- Si el usuario cambia "from" a una fecha posterior al "to" actual, "to" se limpia automáticamente con flash visual rojo (2.8s) + helper temporal de aviso
+- Convención de markup: `data-range="from|to"` + `data-range-name="<rango compartido>"` para que el JS de los pickers se enlace por nombre
+
+### Fixed
+- **`naowee-modal--fixed-header` dismiss padding asimétrico** — el header tenía `padding: 16px 32px`, dejando el botón `__dismiss` a 16px del top y 32px del right (visualmente desbalanceado). Ahora es `padding: 16px` (simétrico) y el `__title-group` tiene `padding-left: 16px` para conservar el indent de 32px del título respecto al body. Resultado: el dismiss queda equidistante del top y del right edge sin afectar la posición del título.
+
+### Backwards compatibility
+- ✅ Todas las clases nuevas son opt-in (modifiers/utilities). Sin cambios en `.naowee-stepper` base, `.naowee-datepicker` base, ni `.naowee-modal` base.
+- ⚠️ El padding del `__header` cambia en `--fixed-header` — productos que dependieran de los 32px laterales del header (no del body) verán el título 16px más cerca del edge si no usan `__title-group`. Revisar en consumers existentes.
+
+---
+
 ## [1.7.0] — 2026-04-30
 
 ### Changed
