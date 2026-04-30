@@ -6,6 +6,37 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/). Vers
 
 ---
 
+## [1.7.0] — 2026-04-30
+
+### Changed
+- **`naowee-btn--loud` hover comportamiento** — reemplaza `bg-darker` por elevation naranja
+  - Antes: `:hover` cambiaba `background: fill-loud-idle → fill-loud-hover` (más oscuro), generaba "flash" visual
+  - Ahora: `:hover` y `:focus-visible` mantienen el bg y agregan `box-shadow: var(--naowee-shadow-loud-md)` (sombra naranja)
+  - Tamaño `--large` → sombra más prominente (`--naowee-shadow-loud-lg`)
+  - `:active` → bg mantiene + sombra reducida (`--naowee-shadow-loud-xs`) para press feel
+  - Patrón validado en `naowee-test-incentivos` (botón "Nuevo programa" en `incentivo-03-programas.html`)
+
+### Added
+- **Tokens de elevation loud** (acento naranja) — disponibles globalmente:
+  - `--naowee-shadow-loud-xs` (2px / 14% opacity)
+  - `--naowee-shadow-loud-sm` (4px / 18%)
+  - `--naowee-shadow-loud-md` (6px / 22%) — usado en btn--loud hover
+  - `--naowee-shadow-loud-lg` (10px / 32%) — usado en btn--loud--large hover
+  - `--naowee-shadow-loud-xl` (16px / 38%) — para CTAs destacadas (modals, hero)
+
+- **Tokens de brand glow** (naranja primario):
+  - `--naowee-shadow-brand-md` (6px / 24% rgba(255,117,0)) — variante intermedia
+  - `--naowee-shadow-brand-lg` (12px / 30%) — para hovers de cards/tiles
+
+### Why
+Patrón "el bg se mantiene + sombra naranja" se sintió más profesional y consistente que "bg cambia a más oscuro" en producción (validado en incentivos). Migrar al DS unifica el comportamiento en todos los productos que consuman el componente.
+
+### Backwards compatibility
+- ✅ Solo cambia el hover. Idle, disabled, loading, focus por keyboard se mantienen.
+- ✅ Productos que dependían del `:hover` del DS reciben automáticamente la mejora al actualizar a v1.7.0.
+
+---
+
 ## [1.6.0] — 2026-04-29
 
 ### Added
