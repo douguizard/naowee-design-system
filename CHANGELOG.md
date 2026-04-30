@@ -6,6 +6,32 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/). Vers
 
 ---
 
+## [1.5.0] — 2026-04-29
+
+### Added
+- **`naowee-table-card`** — nuevo componente compuesto para CRUD pages (Data Table Card)
+  - Container que compone `.naowee-tabs--animated` + toolbar (search + filters + pagination) + tabla + row actions, todo en un solo card cohesivo
+  - Validado en producción en `suite-web-v2` (pantalla "Gestión de usuarios") y portado desde el patrón `tablet` de `naowee-test-incentivos`
+  - Clases agregadas:
+    - `.naowee-table-card` — container con `border-radius: 16px`, `padding: 20px`, flex column con `gap: 18px`
+    - `.naowee-table-card__toolbar` — row con search + filters + pagination
+    - `.naowee-table-card__toolbar-left` — slot izquierdo (search + filtros)
+    - `.naowee-table-card__table-wrap` — wrapper con scrollbar oculto (no reserva gutter)
+    - `.naowee-table-card__row-actions` + `__row-actions-menu` + `__row-actions-item` — popover de acciones por fila (3-dots con menu)
+    - `.naowee-table-card__row-actions-item--danger` — variante destructiva
+  - **`.naowee-table--in-card`** — modifier de la tabla base con thead `bg: #f5f6fa` + border-radius en first/last child + padding más generoso (`16px 18px`)
+  - **`.naowee-table__cell-name`** y **`.naowee-table__cell-muted`** — utilities tipográficas de celdas (weight 500 para nombres, secondary para subtexto)
+- **Override de `.naowee-pagination--small`** dentro del card:
+  - `gap: 12px` entre `__pages` y `__controls` (DS por default deja `0`)
+  - Input cuadrado `32×32` (DS default era `48×32` rectangular)
+  - Spinners nativos del input number ocultos (Webkit + Firefox)
+- **Playground**: nuevo demo `tableCard` con controles para tabs/toolbar/pagination toggleables y switch entre 2 tabs
+
+### Why
+Las pantallas tipo "Gestión de usuarios", "Listado de eventos", "Documentación", etc. comparten el mismo patrón: tabs entre tipos de entidad + filtros + tabla paginada + acciones por fila. Este componente lo formaliza como spec del DS y elimina la necesidad de re-implementarlo en cada producto. La spec visual se mantiene en `naowee-tech/naowee-test-sidebar-shell`.
+
+---
+
 ## [1.4.0] — 2026-04-22
 
 ### Added

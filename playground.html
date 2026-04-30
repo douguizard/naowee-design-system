@@ -2208,6 +2208,103 @@ const COMPONENTS = {
     }
   },
 
+  tableCard: {
+    id:'tableCard', label:'Table Card', desc:'Data table compuesta — tabs + toolbar + tabla + paginación. Patrón validado en CRUD pages (suite-web-v2).', tag:'figma',
+    controls: [
+      { type:'toggle', label:'Tabs',       prop:'tabs',       default:true },
+      { type:'toggle', label:'Toolbar',    prop:'toolbar',    default:true },
+      { type:'toggle', label:'Pagination', prop:'pagination', default:true },
+      { type:'select', label:'Active tab', prop:'activeTab', options:[
+        {l:'Tab 1', v:'0'}, {l:'Tab 2', v:'1'}
+      ], default:0 },
+    ],
+    render(s) {
+      var chev = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+      var chevL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+      var chevR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+      var dots  = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>';
+      var search = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>';
+
+      var sel0 = s.activeTab === '0' ? ' naowee-tab--selected' : '';
+      var sel1 = s.activeTab === '1' ? ' naowee-tab--selected' : '';
+
+      var tabsHtml = s.tabs ? (
+        '<nav class="naowee-tabs naowee-tabs--animated">' +
+          '<button class="naowee-tab' + sel0 + '" type="button">Persona Natural</button>' +
+          '<button class="naowee-tab' + sel1 + '" type="button">Organización</button>' +
+          '<span class="naowee-tabs__indicator"></span>' +
+        '</nav>'
+      ) : '';
+
+      var toolbarHtml = (s.toolbar || s.pagination) ? (
+        '<div class="naowee-table-card__toolbar">' +
+          (s.toolbar ? (
+            '<div class="naowee-table-card__toolbar-left">' +
+              '<div class="naowee-searchbox naowee-searchbox--pill" style="width:280px">' +
+                '<div class="naowee-searchbox__input-wrap" style="border-radius:9999px;height:36px;padding:4px 12px">' +
+                  '<span class="naowee-searchbox__icon" style="display:inline-flex;width:16px;height:16px;color:var(--naowee-color-text-secondary)">' + search + '</span>' +
+                  '<input type="text" class="naowee-searchbox__input" placeholder="Buscar por documento o correo" />' +
+                '</div>' +
+              '</div>' +
+              '<button class="naowee-btn naowee-btn--quiet naowee-btn--small" type="button">Tipo de documento ' + chev + '</button>' +
+              '<button class="naowee-btn naowee-btn--quiet naowee-btn--small" type="button">Filtrar por roles ' + chev + '</button>' +
+            '</div>'
+          ) : '<div></div>') +
+          (s.pagination ? (
+            '<nav class="naowee-pagination naowee-pagination--small">' +
+              '<div class="naowee-pagination__pages">' +
+                '<span class="naowee-pagination__label">Página</span>' +
+                '<input class="naowee-pagination__input" type="text" value="1" />' +
+                '<span class="naowee-pagination__total">de <strong>3</strong></span>' +
+              '</div>' +
+              '<div class="naowee-pagination__controls">' +
+                '<button class="naowee-pagination__btn" disabled>' + chevL + '</button>' +
+                '<button class="naowee-pagination__btn">' + chevR + '</button>' +
+              '</div>' +
+            '</nav>'
+          ) : '') +
+        '</div>'
+      ) : '';
+
+      var rows = [
+        { n:'Juan Camilo Pérez',   e:'juan.perez@example.com',     d:'CC', n2:'686482',     r:'Personal deportivo', st:'positive', stl:'Activo' },
+        { n:'Valentina Ortiz',     e:'valentina.ortiz@gmail.com',  d:'TI', n2:'1093745621', r:'Deportista',         st:'positive', stl:'Activo' },
+        { n:'Camila Vélez',        e:'camila.velez@mindeporte.gov.co', d:'CC', n2:'52941283', r:'Personal deportivo', st:'caution',  stl:'Pendiente' },
+        { n:'Diego Torres',        e:'diego.torres@mindeporte.gov.co', d:'CC', n2:'1014762839', r:'Digitador',       st:'positive', stl:'Activo' },
+        { n:'Felipe Ríos',         e:'felipe.rios@mindeporte.gov.co', d:'CC', n2:'1023948571', r:'Coordinador',      st:'neutral',  stl:'Inactivo' }
+      ];
+      var rowsHtml = rows.map(function(r) {
+        return '<tr>' +
+          '<td class="naowee-table__cell-name">' + r.n + '</td>' +
+          '<td class="naowee-table__cell-muted">' + r.e + '</td>' +
+          '<td class="naowee-table__cell-muted" style="font-weight:500">' + r.d + '</td>' +
+          '<td>' + r.n2 + '</td>' +
+          '<td>' + r.r + '</td>' +
+          '<td><span class="naowee-badge naowee-badge--' + r.st + ' naowee-badge--quiet">' + r.stl + '</span></td>' +
+          '<td style="text-align:right">' +
+            '<div class="naowee-table-card__row-actions">' +
+              '<button class="naowee-btn naowee-btn--icon naowee-btn--mute naowee-btn--small" type="button" aria-label="Acciones">' + dots + '</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+
+      var tableHtml =
+        '<div class="naowee-table-card__table-wrap">' +
+          '<table class="naowee-table--in-card">' +
+            '<thead><tr>' +
+              '<th>Nombre</th><th>Correo</th><th>Tipo</th><th>Documento</th><th>Roles</th><th>Estatus</th><th></th>' +
+            '</tr></thead>' +
+            '<tbody>' + rowsHtml + '</tbody>' +
+          '</table>' +
+        '</div>';
+
+      return '<div class="naowee-table-card" style="width:920px;max-width:100%">' +
+        tabsHtml + toolbarHtml + tableHtml +
+      '</div>';
+    }
+  },
+
   modal: {
     id:'modal', label:'Modal', desc:'Diálogo modal con header, body, footer y scroll opcional', tag:'figma',
     controls: [
