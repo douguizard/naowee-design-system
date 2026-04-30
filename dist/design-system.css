@@ -1576,12 +1576,20 @@
   padding: 0; /* remove py 32 — header/footer handle their own padding */
 }
 .naowee-modal--fixed-header .naowee-modal__header {
-  padding: var(--naowee-spacing-padding-xtiny) var(--naowee-spacing-padding-small); /* 16 32 */
+  /* Padding simétrico: 16px en los 4 lados — el dismiss queda equidistante
+     del top y del right edge. Padding lateral del body se mantiene en
+     var(--naowee-spacing-padding-small) (32px) sin tocarse. */
+  padding: var(--naowee-spacing-padding-xtiny);
   background: var(--naowee-color-fill-primary);
   box-shadow: var(--naowee-shadow-modal-sticky-header);
   gap: var(--naowee-spacing-gap-xmicro);
   position: relative;
   z-index: 2;
+}
+/* Indent del título-group para alinear con el body (32px desde el edge),
+   conservando la simetría visual del dismiss. */
+.naowee-modal--fixed-header .naowee-modal__title-group {
+  padding-left: var(--naowee-spacing-padding-xtiny); /* 16 + 16 = 32 desde edge */
 }
 .naowee-modal--fixed-header .naowee-modal__title {
   font-size: 18px;
@@ -3804,6 +3812,57 @@
   color: var(--naowee-color-text-accent);
 }
 
+/* ── Modifier: --pulse — ring pulsante en el step activo ──
+   Útil cuando el stepper vive en un wizard/modal y queremos llamar
+   atención al paso en curso. */
+.naowee-stepper--pulse .naowee-stepper__step--active .naowee-stepper__number {
+  animation: naoweeStepperPulse 2s cubic-bezier(.4, 0, .6, 1) infinite;
+}
+@keyframes naoweeStepperPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(215, 64, 9, .35); }
+  50%      { box-shadow: 0 0 0 6px rgba(215, 64, 9, 0); }
+}
+
+/* ── Modifier: --distributed — distribución uniforme a ancho completo ──
+   Steps y connectors flexan parejo para llenar el contenedor sin huecos.
+   Útil en headers de wizard/modal donde el stepper debe ocupar todo el ancho.
+   El último step colapsa a su ancho natural (no tiene connector después). */
+.naowee-stepper--distributed { width: 100%; }
+.naowee-stepper--distributed .naowee-stepper__step {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.naowee-stepper--distributed .naowee-stepper__step:last-child {
+  flex: 0 0 auto;
+}
+.naowee-stepper--distributed .naowee-stepper__connector {
+  flex: 1 1 auto;
+  min-width: 24px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITY: SHAKE — wiggle horizontal corto
+   Aplicar a wrappers de textfield/dropdown/etc cuando una validación
+   bloquea el avance. Pattern: agregar la clase, esperar 500ms, removerla.
+   Para reiniciar la animación en re-trigger: remove + reflow + add.
+     wrap.classList.remove('naowee-shake');
+     void wrap.offsetWidth;
+     wrap.classList.add('naowee-shake');
+   ═══════════════════════════════════════════════════════════════ */
+.naowee-shake {
+  animation: naoweeShake .45s cubic-bezier(.36, .07, .19, .97);
+}
+@keyframes naoweeShake {
+  0%, 100% { transform: translateX(0); }
+  15%      { transform: translateX(-6px); }
+  30%      { transform: translateX(5px); }
+  45%      { transform: translateX(-4px); }
+  60%      { transform: translateX(3px); }
+  75%      { transform: translateX(-2px); }
+  90%      { transform: translateX(1px); }
+}
+
 
 /* ═══════════════════════════════════════════════════════════════
    COMPONENT: RADIO BUTTON
@@ -5359,6 +5418,60 @@
 }
 .naowee-datepicker-field--small .naowee-datepicker-field__value {
   font-size: var(--naowee-font-size-12);
+}
+
+/* ── Modifier: --compact — calendario reducido para popups en formularios densos ──
+   Reduce el ancho del calendario de 412px → 266px y las celdas de 40×40 → 32×32.
+   Útil cuando el datepicker se abre como popover anclado a un input de columna
+   estrecha (ej: grid 2-col en modal). Mantiene legibilidad con tipo 12-13px. */
+.naowee-datepicker--compact {
+  width: 266px;
+  padding: 14px;
+  gap: var(--naowee-spacing-gap-xmicro, 8px);
+}
+.naowee-datepicker--compact .naowee-datepicker__month {
+  font-size: 13px;
+  line-height: 18px;
+}
+.naowee-datepicker--compact .naowee-datepicker__nav {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: transparent;
+}
+.naowee-datepicker--compact .naowee-datepicker__nav svg { width: 16px; height: 16px; }
+.naowee-datepicker--compact .naowee-datepicker__weekday {
+  width: 32px; height: 24px;
+  font-size: 10px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+.naowee-datepicker--compact .naowee-datepicker__day {
+  width: 32px; height: 32px;
+  font-size: 12px; line-height: 16px;
+  border-radius: 6px;
+}
+
+/* ── Wrapper: --popover — calendario flotante con elevación ──
+   Estilo de popup para anclar a un trigger (ej: textfield). El consumer
+   posiciona vía JS (position:fixed + getBoundingClientRect del trigger).
+   Estado .naowee-datepicker--open hace fade+slide visible.
+   Z-index: 10000 (arriba de modales en 9000). */
+.naowee-datepicker--popover {
+  position: fixed;
+  z-index: 10000;
+  background: var(--naowee-color-fill-primary, #fff);
+  border: 1px solid var(--naowee-color-border-default, #e7e9f3);
+  border-radius: var(--naowee-border-radius-large, 12px);
+  box-shadow: 0 12px 32px rgba(40, 40, 52, .14);
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity .18s, transform .18s;
+}
+.naowee-datepicker--popover.naowee-datepicker--open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 /* ═══════════════════════════════════════════════════════════════
