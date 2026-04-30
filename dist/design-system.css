@@ -6011,7 +6011,9 @@
   color: var(--naowee-color-text-secondary);
   padding: 12px 18px;
   text-align: left;
-  background: var(--naowee-color-fill-secondary, #f5f6fa);
+  /* gray-100 (#F4F5F9) — más claro que fill-secondary (gray-300) que es muy oscuro
+     en una tabla densa. Patrón validado en suite-web-v2. */
+  background: var(--naowee-color-gray-100, #f4f5f9);
   border: none;
   white-space: nowrap;
 }

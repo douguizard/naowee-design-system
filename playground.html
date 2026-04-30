@@ -2228,26 +2228,40 @@ const COMPONENTS = {
       var sel0 = s.activeTab === '0' ? ' naowee-tab--selected' : '';
       var sel1 = s.activeTab === '1' ? ' naowee-tab--selected' : '';
 
+      /* Tabs del DS — versión simple (sin --animated; usa el ::after del .naowee-tab--selected) */
       var tabsHtml = s.tabs ? (
-        '<nav class="naowee-tabs naowee-tabs--animated">' +
+        '<div class="naowee-tabs">' +
           '<button class="naowee-tab' + sel0 + '" type="button">Persona Natural</button>' +
           '<button class="naowee-tab' + sel1 + '" type="button">Organización</button>' +
-          '<span class="naowee-tabs__indicator"></span>' +
-        '</nav>'
+        '</div>'
       ) : '';
+
+      /* Helper para dropdowns del DS */
+      function ddDS(placeholder) {
+        return '<div class="naowee-dropdown naowee-dropdown--small" style="width:200px">' +
+                 '<div class="naowee-dropdown__trigger">' +
+                   '<span class="naowee-dropdown__placeholder">' + placeholder + '</span>' +
+                   '<span class="naowee-dropdown__controls">' +
+                     '<span class="naowee-dropdown__chevron">' + chev + '</span>' +
+                   '</span>' +
+                 '</div>' +
+               '</div>';
+      }
 
       var toolbarHtml = (s.toolbar || s.pagination) ? (
         '<div class="naowee-table-card__toolbar">' +
           (s.toolbar ? (
             '<div class="naowee-table-card__toolbar-left">' +
-              '<div class="naowee-searchbox naowee-searchbox--pill" style="width:280px">' +
-                '<div class="naowee-searchbox__input-wrap" style="border-radius:9999px;height:36px;padding:4px 12px">' +
-                  '<span class="naowee-searchbox__icon" style="display:inline-flex;width:16px;height:16px;color:var(--naowee-color-text-secondary)">' + search + '</span>' +
+              /* Searchbox del DS (pill = rounded shape default + small) */
+              '<div class="naowee-searchbox naowee-searchbox--small" style="width:280px">' +
+                '<div class="naowee-searchbox__input-wrap">' +
+                  '<span class="naowee-searchbox__icon">' + search + '</span>' +
                   '<input type="text" class="naowee-searchbox__input" placeholder="Buscar por documento o correo" />' +
                 '</div>' +
               '</div>' +
-              '<button class="naowee-btn naowee-btn--quiet naowee-btn--small" type="button">Tipo de documento ' + chev + '</button>' +
-              '<button class="naowee-btn naowee-btn--quiet naowee-btn--small" type="button">Filtrar por roles ' + chev + '</button>' +
+              /* Dropdowns del DS (no botones) */
+              ddDS('Tipo de documento') +
+              ddDS('Filtrar por roles') +
             '</div>'
           ) : '<div></div>') +
           (s.pagination ? (
