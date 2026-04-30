@@ -6,6 +6,35 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/). Vers
 
 ---
 
+## [1.6.0] — 2026-04-29
+
+### Added
+- **`naowee-page-header`** — patrón uniforme para títulos de página
+  - `__title` (24px / 700 / -.3px tracking)
+  - `__subtitle` (13px / 400 / text-secondary)
+  - Reemplaza implementaciones ad-hoc en CRUD pages (Gestión de usuarios, Eventos, etc.)
+
+- **`naowee-filter-dropdown`** — dropdown compacto para toolbars
+  - Distinto al `.naowee-dropdown` de forms: altura `36px`, radius `8px`, sin label/helper
+  - Estados: idle / hover / open (accent border + 3px shadow ring)
+  - Slots: `__trigger`, `__chev`, `__menu`, `__option`, `__option-check` (con `aria-selected="true"`)
+  - Pensado para vivir en `.naowee-table-card__toolbar` u otros toolbars
+
+- **`naowee-empty-state`** — estado vacío genérico
+  - `__icon` (48×48 con color text-disabled)
+  - `__title` (16px / 700)
+  - `__description` (13px / max-width 320px)
+  - `__action` slot (típicamente un `naowee-btn--mute` para "Limpiar filtros")
+  - Reemplaza implementaciones custom en listas, búsquedas sin resultados, tablas vacías
+
+### Playground
+- 3 nuevos componentes con controles toggleables: `pageHeader`, `filterDropdown`, `emptyState`
+
+### Why
+Estos 3 componentes quedaban como overrides locales en `naowee-test-sidebar-shell` después de migrar a `naowee-table-card` (v1.5.0). Subirlos al DS elimina la última deuda local del sandbox y los hace reusables en cualquier CRUD page del ecosistema Naowee.
+
+---
+
 ## [1.5.0] — 2026-04-29
 
 ### Added

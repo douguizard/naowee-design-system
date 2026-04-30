@@ -2319,6 +2319,82 @@ const COMPONENTS = {
     }
   },
 
+  pageHeader: {
+    id:'pageHeader', label:'Page Header', desc:'Título y subtítulo de página — patrón uniforme para CRUD pages', tag:'figma',
+    controls: [
+      { type:'text', label:'Title', prop:'title', default:'Gestión de usuarios' },
+      { type:'text', label:'Subtitle', prop:'subtitle', default:'Administra los usuarios y sus roles en el sistema' },
+    ],
+    render(s) {
+      return '<div class="naowee-page-header" style="width:560px;max-width:100%">' +
+        '<h1 class="naowee-page-header__title">' + (s.title || 'Page title') + '</h1>' +
+        '<p class="naowee-page-header__subtitle">' + (s.subtitle || 'Page description') + '</p>' +
+      '</div>';
+    }
+  },
+
+  filterDropdown: {
+    id:'filterDropdown', label:'Filter Dropdown', desc:'Dropdown compacto para toolbars (height 36px, accent border al abrir). Distinto al naowee-dropdown de forms.', tag:'figma',
+    controls: [
+      { type:'select', label:'State', prop:'state', options:[
+        {l:'Idle', v:''}, {l:'Open', v:'is-open'}, {l:'Selected', v:'selected'}
+      ], default:0 },
+      { type:'text', label:'Placeholder', prop:'placeholder', default:'Tipo de documento' },
+    ],
+    render(s) {
+      var chev = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+      var check = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      var isOpen = s.state === 'is-open' || s.state === 'selected';
+      var label = s.state === 'selected' ? 'Cédula de ciudadanía (CC)' : (s.placeholder || 'Filtrar');
+      var cls = 'naowee-filter-dropdown' + (isOpen ? ' is-open' : '');
+      var opts = [
+        { v:'all', l:'Todos los tipos', sel: s.state !== 'selected' },
+        { v:'cc',  l:'Cédula de ciudadanía (CC)', sel: s.state === 'selected' },
+        { v:'ti',  l:'Tarjeta de identidad (TI)' },
+        { v:'ce',  l:'Cédula de extranjería (CE)' },
+        { v:'pa',  l:'Pasaporte (PA)' },
+      ];
+      var menuHtml = isOpen ? (
+        '<div class="naowee-filter-dropdown__menu">' +
+          opts.map(function(o) {
+            return '<button type="button" class="naowee-filter-dropdown__option" aria-selected="' + (o.sel ? 'true' : 'false') + '">' +
+              '<span>' + o.l + '</span>' +
+              '<span class="naowee-filter-dropdown__option-check">' + check + '</span>' +
+            '</button>';
+          }).join('') +
+        '</div>'
+      ) : '';
+      return '<div class="' + cls + '" style="display:inline-flex">' +
+        '<button class="naowee-filter-dropdown__trigger" type="button">' +
+          '<span>' + label + '</span>' +
+          '<span class="naowee-filter-dropdown__chev">' + chev + '</span>' +
+        '</button>' +
+        menuHtml +
+      '</div>';
+    }
+  },
+
+  emptyState: {
+    id:'emptyState', label:'Empty State', desc:'Estado vacío genérico — para listas, búsquedas sin match, etc.', tag:'figma',
+    controls: [
+      { type:'toggle', label:'Show icon', prop:'showIcon', default:true },
+      { type:'toggle', label:'Show action', prop:'showAction', default:false },
+      { type:'text', label:'Title', prop:'title', default:'Sin resultados' },
+      { type:'text', label:'Description', prop:'description', default:'Prueba a limpiar los filtros o cambiar la búsqueda.' },
+    ],
+    render(s) {
+      var icoSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
+      var icon = s.showIcon ? '<span class="naowee-empty-state__icon">' + icoSvg + '</span>' : '';
+      var action = s.showAction ? '<div class="naowee-empty-state__action"><button class="naowee-btn naowee-btn--mute naowee-btn--small">Limpiar filtros</button></div>' : '';
+      return '<div class="naowee-empty-state" style="width:480px;max-width:100%">' +
+        icon +
+        '<h3 class="naowee-empty-state__title">' + (s.title || 'Empty') + '</h3>' +
+        '<p class="naowee-empty-state__description">' + (s.description || 'Description') + '</p>' +
+        action +
+      '</div>';
+    }
+  },
+
   modal: {
     id:'modal', label:'Modal', desc:'Diálogo modal con header, body, footer y scroll opcional', tag:'figma',
     controls: [
