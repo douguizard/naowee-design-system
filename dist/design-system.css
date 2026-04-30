@@ -5940,3 +5940,192 @@
   .naowee-floating-footer{bottom:12px;right:12px;padding:0 10px 0 8px}
   .naowee-floating-footer__sep,.naowee-floating-footer__text{display:none}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLE CARD — Data table compuesta (CRUD pages)
+   Container que compone:
+     - tabs (.naowee-tabs--animated)
+     - toolbar (search + filters + pagination en una row)
+     - tabla (.naowee-table--in-card)
+     - row actions (.naowee-table-card__row-actions)
+   Validado en suite-web-v2 (Gestión de usuarios) y patrones similares.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Container ── */
+.naowee-table-card{
+  background: var(--naowee-color-fill-primary);
+  border: var(--naowee-border-width-small) solid var(--naowee-color-border-default);
+  border-radius: var(--naowee-border-radius-default-large, 16px);
+  padding: var(--naowee-spacing-padding-small, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--naowee-spacing-gap-xsmall, 18px);
+}
+
+/* ── Tabs slot — divider full-width compensa el padding del card ── */
+.naowee-table-card .naowee-tabs{
+  margin: 0 calc(var(--naowee-spacing-padding-small, 20px) * -1);
+  padding: 0 var(--naowee-spacing-padding-small, 20px);
+  background: transparent;
+}
+
+/* ── Toolbar (search + filters + pagination en una sola row) ── */
+.naowee-table-card__toolbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--naowee-spacing-gap-xsmall, 12px);
+  flex-wrap: wrap;
+}
+.naowee-table-card__toolbar-left{
+  display: flex;
+  gap: var(--naowee-spacing-gap-xsmall, 12px);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ── Tabla con estilos para vivir DENTRO del card ──
+   thead con bg quiet + radius en esquinas, similar al patrón validado en
+   suite-web-v2 y naowee-test-incentivos. */
+.naowee-table-card__table-wrap{
+  /* Permite scroll horizontal si excede ancho, pero scrollbar oculto
+     para no reservar gutter (genera un "vacío" raro al final). */
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.naowee-table-card__table-wrap::-webkit-scrollbar{ display: none; }
+
+.naowee-table--in-card{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--naowee-font-family);
+}
+.naowee-table--in-card thead th{
+  font-size: var(--naowee-font-size-11, 11px);
+  font-weight: var(--naowee-font-weight-semibold, 600);
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  color: var(--naowee-color-text-secondary);
+  padding: 12px 18px;
+  text-align: left;
+  /* gray-100 (#F4F5F9) — más claro que fill-secondary (gray-300) que es muy oscuro
+     en una tabla densa. Patrón validado en suite-web-v2. */
+  background: var(--naowee-color-gray-100, #f4f5f9);
+  border: none;
+  white-space: nowrap;
+}
+.naowee-table--in-card thead th:first-child{
+  border-top-left-radius: var(--naowee-border-radius-default, 12px);
+  border-bottom-left-radius: var(--naowee-border-radius-default, 12px);
+}
+.naowee-table--in-card thead th:last-child{
+  border-top-right-radius: var(--naowee-border-radius-default, 12px);
+  border-bottom-right-radius: var(--naowee-border-radius-default, 12px);
+}
+
+.naowee-table--in-card tbody td{
+  padding: 16px 18px;
+  font-size: var(--naowee-font-size-13, 13px);
+  vertical-align: middle;
+  color: var(--naowee-color-text-primary);
+  border-bottom: var(--naowee-border-width-small) solid var(--naowee-color-border-default);
+}
+.naowee-table--in-card tbody tr{
+  transition: background var(--naowee-transition-default);
+}
+.naowee-table--in-card tbody tr:hover{
+  background: #fafbfd;
+}
+.naowee-table--in-card tbody tr:last-child td{ border-bottom: none; }
+
+/* Cells tipográficas — pesos medium para no generar contraste excesivo */
+.naowee-table--in-card .naowee-table__cell-name{
+  font-weight: var(--naowee-font-weight-medium, 500);
+  color: var(--naowee-color-text-primary);
+}
+.naowee-table--in-card .naowee-table__cell-muted{
+  color: var(--naowee-color-text-secondary);
+  font-size: var(--naowee-font-size-12, 12.5px);
+}
+
+/* ── Row actions (3-dots) — wrapper para popover ── */
+.naowee-table-card__row-actions{
+  position: relative;
+  display: inline-block;
+}
+.naowee-table-card__row-actions-menu{
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: max-content;
+  background: var(--naowee-color-fill-primary);
+  border: var(--naowee-border-width-small) solid var(--naowee-color-border-default);
+  border-radius: var(--naowee-border-radius-default, 12px);
+  box-shadow: 0 12px 32px rgba(40, 40, 52, .12);
+  padding: 6px;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity .18s, transform .18s;
+  z-index: 25;
+}
+.naowee-table-card__row-actions.is-open .naowee-table-card__row-actions-menu{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.naowee-table-card__row-actions-item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: var(--naowee-font-size-13, 13px);
+  font-weight: var(--naowee-font-weight-medium, 500);
+  color: var(--naowee-color-text-primary);
+  text-align: left;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--naowee-transition-default);
+}
+.naowee-table-card__row-actions-item:hover{
+  background: var(--naowee-color-interactive-fill-mute-hover, #f5f6fa);
+}
+.naowee-table-card__row-actions-item--danger{
+  color: var(--naowee-color-feedback-text-negative-loud, #d11f1f);
+}
+.naowee-table-card__row-actions-item--danger:hover{
+  background: var(--naowee-color-feedback-fill-negative-quiet, #fff0ee);
+}
+.naowee-table-card__row-actions-item-icon{
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Pagination overrides para vivir en el toolbar del card ── */
+.naowee-table-card .naowee-pagination--small{
+  gap: 12px; /* el DS deja 0 entre __pages y __controls; acá agregamos aire */
+}
+.naowee-table-card .naowee-pagination--small .naowee-pagination__input{
+  width: 32px;
+  padding: 4px 0;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+.naowee-table-card .naowee-pagination__input::-webkit-outer-spin-button,
+.naowee-table-card .naowee-pagination__input::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
